@@ -3,11 +3,39 @@
 ## Version 1.1
 ## Created By: Justin Flynn
 ## Modified By: Todd Butters
-## Requires: PostgreSQL 9.6+
-## Usage: ezpgcompact.sh <table-name>
+## Requires: PostgreSQL 9.6+ and pgcompact installed in ~postgres/bin/
+## Usage: ezpgcompact.sh <table_name>
 
 export PATH=$PATH:/usr/local/ctera/postgres/bin
+SCRIPT=$(basename $0)
 TABLE_NAME=$1
+TABLE_EXISTS=$(~postgres/bin/psql -t -c "SELECT EXISTS ( SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '$1' );" -U postgres)
+
+usage(){
+  echo "Usage: ./$SCRIPT <table_name>"
+  echo "Please specify 1 table to run pgcompact against."
+  echo "Run the following command to see a list of tables."
+  echo ""
+  echo "~postgres/bin/psql -U postgres -t -c \"SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';\""
+  echo ""
+}
+
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied."
+    usage
+    echo "Exiting $SCRIPT"
+    exit 1
+fi
+
+if [ $TABLE_EXISTS = 'f' ]; then
+  echo "ERROR: Table '$1' not found."
+  usage
+  echo "Exiting $SCRIPT"
+  exit 255
+fi
+
+echo "Starting $SCRIPT ..."
 
 # configure pgcompact parms
 echo "Setting pgcompact parms..."
@@ -56,5 +84,6 @@ echo ""
 
 # fin
 echo "pgcompact complete!"
+echo "Exiting $SCRIPT"
 
 exit 0
