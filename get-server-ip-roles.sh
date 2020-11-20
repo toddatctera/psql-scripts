@@ -1,4 +1,7 @@
 #!/bin/bash
+# Run from the primary database.
+# Copy, paste, and run the command below.
+# Or save as a file, make executable or run bash <filename>.
 su - postgres -c "/usr/local/ctera/postgres/bin/psql -X << EOF
 SELECT roles.IP,
        roles.server_name,
