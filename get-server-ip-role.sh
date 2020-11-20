@@ -1,0 +1,4 @@
+#!/bin/bash
+su - postgres -c "/usr/local/ctera/postgres/bin/psql -X << EOF
+select roles.IP,roles.server_name,CASE WHEN roles.replication IS NOT NULL THEN 'Replication' WHEN (roles.IsTomcat='true' and roles.catalog='t') THEN 'DB_Application' WHEN roles.catalog='t' THEN 'DB' WHEN roles.IsTomcat='true' THEN 'Applicaiton' WHEN roles.IsPrev='Active' THEN 'Preview' ELSE 'ELSE' END AS Sherale_notes from (SELECT s.default_ipaddr AS IP, bo.name AS SERVER_NAME, ((xpath('//att[@id=\"isApplicationServer\"]/val/text ()', XMLPARSE(DOCUMENT xml_field)))[1]::text::text) as IsTomcat, ((xpath('//att[@id=\"previewStatus\"]/val/text ()', XMLPARSE(DOCUMENT xml_field)))[1]::text::text) as IsPrev, bo.type, s.connected, s.replication_of as replication, s.is_catalog_node as catalog FROM base_objects bo, servers s WHERE bo.uid IN (SELECT UID FROM servers) AND bo.uid=s.uid ORDER BY 4) as roles;
+EOF"
