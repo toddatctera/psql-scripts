@@ -1,0 +1,28 @@
+/*
+Return Oprhan Folder Groups
+Finds Folder Group IDs that exist in blocks
+but do not exist in base_objects
+*/
+WITH RECURSIVE t AS
+  ( SELECT min(group_id) AS group_id
+   FROM blocks
+   UNION ALL SELECT
+     ( SELECT min(group_id)
+      FROM blocks
+      WHERE group_id > t.group_id )
+   FROM t
+   WHERE t.group_id IS NOT NULL),
+               distinct_fgs AS
+  ( SELECT group_id
+   FROM t
+   WHERE group_id IS NOT NULL
+   UNION ALL SELECT NULL
+   WHERE EXISTS
+       ( SELECT 1
+        FROM blocks
+        WHERE group_id IS NULL ))
+SELECT group_id AS RESULT
+FROM distinct_fgs EXCEPT
+  ( SELECT uid
+   FROM base_objects );
+   
