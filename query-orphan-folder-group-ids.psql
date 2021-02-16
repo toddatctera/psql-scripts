@@ -1,8 +1,8 @@
 /*
-Return Oprhan Folder Groups
-Finds Folder Group IDs that exist in blocks
-but do not exist in base_objects
-*/
+ * Return Oprhan Folder Groups
+ * Finds Folder Group IDs that exist in blocks
+ * but do not exist in base_objects
+ */
 WITH RECURSIVE t AS
   ( SELECT min(group_id) AS group_id
    FROM blocks
