@@ -1,9 +1,11 @@
+-- Usage: save as a file, e.g. query-Documents-Folders.sql, and run command below as root.
+-- ~postgres/bin/psql -U postgres -f query-Documents-Folders.sql > $datadir/query-results.txt
 SELECT 
 	bo.name AS owner_name,subquery.*
 FROM (
 SELECT
 	fs.owner_id,
-	bo.name,
+	bo.name AS folder_name,
 	pg_size_pretty(fs.folder_size) AS Folder_size,
 	fs.total_files,
 	fs.folder_id,
@@ -19,7 +21,7 @@ WHERE
 	AND fs.is_deleted='f'
 ) as subquery
 JOIN base_objects AS bo ON subquery.owner_id = bo.uid
-ORDER BY owner_name
-LIMIT 10
+ORDER BY owner_name, folder_name
+LIMIT 50
 ;
 
