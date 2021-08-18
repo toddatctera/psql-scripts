@@ -2,6 +2,9 @@
 
 Collection of bash scripts and prepared statements for PostgreSQL.
 
+* auto-gen TOC:
+{:toc}
+
 ## check-tables.sh
 Check if a table exists or not. Mostly intended to be used as a function in other scripts to do table name validation.
 ```
@@ -14,7 +17,8 @@ Run the following command to see a list of valid table names.
 ~postgres/bin/psql -U postgres -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
 ```
 
-## export-devices.sql
+## [export-devices.sql](https://github.com/toddatctera/psql-scripts/blob/master/export-devices.sql)
+Output or export a list of all devices connected to all tenant portals.
 ```
 [root@cteraportal ctera ]# ~postgres/bin/psql -U postgres -f export-devices.sql
  owner_name  | device_uid |  device_name   | portal_name |   version   |    device_type    |            os_name            |      last_connected_time
